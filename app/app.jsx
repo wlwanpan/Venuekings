@@ -17,11 +17,13 @@ ReactDOM.render(
             <div className="row">
 
                 <div className="small-6 columns">
-                    <p>DISTRIBUTION EMAIL SYSTEM</p>
+                    <p className="title">DISTRIBUTION EMAIL SYSTEM</p>
                     <AddUser/>
+                    <p> To add a new user, fill out the username and email address form and click on register.</p>
+                    <p> Click on the corresponding registered user to delete it from the database.</p>
                 </div>
                 <div className="small-6 columns">
-                    <p>USERS ONLINE</p>
+                    <p className="title">USERS REGISTERED</p>
                     <UserList/>
                 </div>
 

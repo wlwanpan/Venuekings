@@ -37,15 +37,24 @@ var UserList = React.createClass({
     },
     renderUserList: function () {
 
-        return (
-            this.state.userList.map((user) => {
-
-                var { username, emailCount } = user;
-                return (
-                    <User key={username} username={username} emailCount={emailCount}/>
-                );
-            })
-        )
+        if (this.state.userList.length === 0) {
+            return (
+                <div>
+                    <a className="button hollow expanded" href="#">
+                        No user registered
+                    </a>
+                </div>
+            )
+        } else {
+            return (
+                this.state.userList.map((user) => {
+                    var { username, emailCount } = user;
+                    return (
+                        <User key={username} username={username} emailCount={emailCount}/>
+                    );
+                })
+            )
+        }
     },
     render: function () {
 

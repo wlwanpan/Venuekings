@@ -1,11 +1,12 @@
-
+// Database object to store registered users
 var localDB = {};
+// Rate of emailCount updates in ms
 const SERVER_TICK = 100;
 
 var getRandomInt = (min, max) => {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
-
+// Json to Arr conversion helper functions
 var objToEmailCountArr = () => {
     return Object.keys(localDB).map(key => localDB[key].emailCount )
 };
@@ -16,9 +17,9 @@ var objToKeyArr = () => {
     return Object.keys(localDB).map(key => key )
 };
 
+// Email updater loop
 var ServerLoop = (() => {
     setInterval(() => {
-        //console.log('updating');
         // call update server tick function
         var emailCountArr = objToEmailCountArr();
         var keyArr = objToKeyArr();
@@ -30,21 +31,25 @@ var ServerLoop = (() => {
             }, 0);
 
             if ( emailCountArr.length === 0 || keyArr.length === 0 ) {
-
+                // do nothing
             } else if ( totalEmail === 0 ) {
+                // randomizing according to key value
                 var RandomizedIndex = getRandomInt(0, keyArr.length-1);
-                //console.log(localDB[keyArr[RandomizedIndex]]);
                 localDB[keyArr[RandomizedIndex]].emailCount += 1;
-            } else {
 
-                var weightedEmailArr = emailCountArr.map((count) => {
-                    return totalEmail - count;
-                });
+            } else {
+                // create a weighted array such as the more emailCount a user handleAddUser
+                // the lesser is the weighted value (weighted value is directly proportional
+                // to p(receiving an email))
+                var weightedEmailArr = emailCountArr.map(count => totalEmail - count);
                 var UpperRandomLimit = weightedEmailArr.reduce((prev, curr) => {
                     return prev + curr
                 }, 0);
+
+                // Generate random value from the weighted array
                 var RandomizedIndex = getRandomInt(0, UpperRandomLimit-1);
 
+                // updating the emailCount of the user randomized
                 for (var i = 0; i < weightedEmailArr.length; i++) {
 
                     if ( RandomizedIndex - weightedEmailArr[i] <= 0 ) {
@@ -63,11 +68,12 @@ var ServerLoop = (() => {
 
 module.exports = {
 
+    // Generate a random ID and add new user to localDB
     addNewUser: function (data) {
 
         var { username, email } = data;
         var usernameArr = objToUsernameArr();
-        console.log(usernameArr)
+
         if (usernameArr && usernameArr.indexOf(username) < 0) {
 
             var newID = getRandomInt(10000, 99999);
@@ -83,6 +89,7 @@ module.exports = {
         }
 
     },
+    // returns an array of obj {username, emailCount}
     getUserList: function () {
         var returnArr = [];
 
@@ -97,7 +104,18 @@ module.exports = {
         }
         return returnArr;
     },
+    // delete user from localDB
     deleteUser: function (name) {
 
+        var keyArr = objToKeyArr();
+
+        for (var i = 0; i < keyArr.length; i++) {
+            
+            var key = keyArr[i];
+            if (localDB[key].username === name) {
+                delete localDB[key];
+                break;
+            }
+        }
     }
 }

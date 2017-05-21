@@ -7,7 +7,9 @@ var User = React.createClass({
 
         return (
             <div>
-                <a className="button hollow expanded" href="#">
+                <a className="button hollow expanded" href="#" onClick={() => {
+                        emailAPI.deleteUser(this.props.username);
+                    }}>
                     {this.props.username} received {this.props.emailCount} emails
                 </a>
             </div>
